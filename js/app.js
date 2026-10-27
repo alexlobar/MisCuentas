@@ -8,21 +8,22 @@
   var view = document.getElementById('view');
   var currentRoute = 'dashboard';
   // la versión va en tres sitios que deben coincidir: aquí, VERSION en sw.js y data-build en index.html
-  var APP_VERSION = '1.0.0';
+  var APP_VERSION = '1.0.1';
 
   /* ---------------- instalar la app ----------------
      Chrome para Android (≤157) dice «ya está instalada» en su menú si hay OTRA
      app instalada en el mismo dominio (alexlobar.github.io: Hábitos, Japón…).
      beforeinstallprompt sí mira la carpeta: se guarda y se ofrece con un botón
      propio, que solo sale cuando el navegador permite instalarla. */
-  var installPrompt = null;
-  window.addEventListener('beforeinstallprompt', function (ev) {
-    ev.preventDefault();
+  // el aviso se escucha en index.html (antes del manifiesto); si ya llegó, se recoge aquí
+  var installPrompt = window.__installPrompt || null;
+  window.__onInstallPrompt = function (ev) {
     installPrompt = ev;
     if (currentRoute === 'dashboard' || currentRoute === 'ajustes') render();
-  });
+  };
   window.addEventListener('appinstalled', function () {
     installPrompt = null;
+    window.__installPrompt = null;
     toast('Mis cuentas instalada. Ya la tienes con las demás apps.', 'good');
     if (currentRoute === 'dashboard' || currentRoute === 'ajustes') render();
   });
@@ -30,6 +31,7 @@
     if (!installPrompt) return;
     var ev = installPrompt;
     installPrompt = null;            // cada aviso solo se puede usar una vez
+    window.__installPrompt = null;
     ev.prompt();
     if (ev.userChoice) ev.userChoice.then(function () { render(); }, function () { render(); });
   }

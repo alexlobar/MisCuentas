@@ -5,7 +5,7 @@
    Con conexión coge siempre la versión nueva; sin ella, la guardada.
    ============================================================ */
 // la misma versión que APP_VERSION (js/app.js) y data-build (index.html)
-var VERSION = 'mis-cuentas-1.0.0';
+var VERSION = 'mis-cuentas-1.0.1';
 var FICHEROS = [
   './', 'index.html', 'manifest.webmanifest',
   'css/styles.css',

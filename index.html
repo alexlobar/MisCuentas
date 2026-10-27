@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light" data-build="1.0.0">
+<html lang="es" data-theme="light" data-build="1.0.1">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,6 +13,16 @@
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <script>
+  /* Chrome Android (≤157) dice «ya está instalada» en su menú si hay OTRA app
+     instalada en el mismo dominio (alexlobar.github.io). beforeinstallprompt sí
+     mira la carpeta: se escucha ya aquí, ANTES de enlazar el manifiesto, para no
+     perder el aviso, y app.js lo ofrece con un botón propio. */
+  window.__installPrompt = null;
+  window.addEventListener('beforeinstallprompt', function (ev) {
+    ev.preventDefault();               // sin la mini-barra de Chrome: usamos nuestro botón
+    window.__installPrompt = ev;
+    if (window.__onInstallPrompt) window.__onInstallPrompt(ev);
+  });
   // Para instalarla en el móvil hace falta el manifiesto; abierta como fichero
   // (doble clic en el PC) no sirve y el navegador se quejaría, así que solo se pone en web.
   if (location.protocol !== 'file:') {

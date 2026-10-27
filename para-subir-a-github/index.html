@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light" data-build="1.0.0">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mis cuentas</title>
+<meta name="theme-color" content="#2a78d6">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mis cuentas">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<script>
+  // Para instalarla en el móvil hace falta el manifiesto; abierta como fichero
+  // (doble clic en el PC) no sirve y el navegador se quejaría, así que solo se pone en web.
+  if (location.protocol !== 'file:') {
+    var l = document.createElement('link'); l.rel = 'manifest'; l.href = 'manifest.webmanifest';
+    document.head.appendChild(l);
+  }
+</script>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <span class="brand-mark">💼</span>
+    <div>
+      <div class="brand-name">Mis cuentas</div>
+      <div class="brand-sub">100% local · sin servidor</div>
+    </div>
+  </div>
+  <!-- selector de espacio (Casa / Personal) y menú: los pinta app.js -->
+  <div class="espacio" id="espacio" role="group" aria-label="Espacio"></div>
+  <button class="btn ghost menu-btn" id="menuBtn" aria-label="Menú" aria-expanded="false" aria-controls="nav">☰</button>
+  <nav class="nav" id="nav"></nav>
+  <div class="sidebar-foot">
+    <button class="btn ghost sm" id="themeToggle" title="Cambiar tema">◐ Tema</button>
+    <div class="storage-note" id="storageNote"></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div id="view"></div>
+</main>
+
+<!-- barra de pestañas del móvil: la pinta app.js -->
+<nav class="tabbar" id="tabbar" aria-label="Accesos rápidos"></nav>
+
+<div id="tooltip" class="chart-tooltip" hidden></div>
+<div id="toasts" class="toasts"></div>
+
+<dialog id="modal" class="modal">
+  <div class="modal-body" id="modalBody"></div>
+</dialog>
+
+<script src="js/store.js"></script>
+<script src="js/xlsx.js"></script>
+<script src="js/parse.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

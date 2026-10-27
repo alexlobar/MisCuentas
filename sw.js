@@ -5,7 +5,9 @@
    Con conexión coge siempre la versión nueva; sin ella, la guardada.
    ============================================================ */
 // la misma versión que APP_VERSION (js/app.js) y data-build (index.html)
-var VERSION = 'mis-cuentas-1.0.1';
+var VERSION = 'mis-cuentas-1.0.2';
+// todas las apps de alexlobar.github.io comparten el almacén de cachés: al actualizar, sólo se borran las de esta app
+var PREFIJO = 'mis-cuentas-';
 var FICHEROS = [
   './', 'index.html', 'manifest.webmanifest',
   'css/styles.css',
@@ -19,7 +21,7 @@ self.addEventListener('install', function (e) {
 
 self.addEventListener('activate', function (e) {
   e.waitUntil(caches.keys().then(function (ks) {
-    return Promise.all(ks.filter(function (k) { return k !== VERSION; }).map(function (k) { return caches.delete(k); }));
+    return Promise.all(ks.filter(function (k) { return k.indexOf(PREFIJO) === 0 && k !== VERSION; }).map(function (k) { return caches.delete(k); }));
   }).then(function () { return self.clients.claim(); }));
 });
 

@@ -8,7 +8,7 @@
   var view = document.getElementById('view');
   var currentRoute = 'dashboard';
   // la versión va en tres sitios que deben coincidir: aquí, VERSION en sw.js y data-build en index.html
-  var APP_VERSION = '1.0.1';
+  var APP_VERSION = '1.0.2';
 
   /* ---------------- instalar la app ----------------
      Chrome para Android (≤157) dice «ya está instalada» en su menú si hay OTRA
@@ -2518,9 +2518,29 @@
     } else {
       estado = 'Cuando el navegador deje instalarla saldrá aquí el botón <b>Instalar</b>. En el móvil, ábrela en Chrome (no desde otra app) y recarga una vez.';
     }
-    return '<div class="card"><div class="card-head"><h2>Esta instalación</h2><span class="hint">versión ' + APP_VERSION + '</span></div>' +
+    var t = sizes();
+    return '<div class="card"><div class="card-head"><h2>Esta instalación</h2><span class="hint">versión ' + APP_VERSION + ' · ' + kb(t.app + t.datos) + '</span></div>' +
       '<div class="kv" style="margin-bottom:10px">' + estado + '</div>' +
+      '<div class="kv" style="margin-bottom:10px">Ocupa <b>' + kb(t.app + t.datos) + '</b>: ' +
+        (t.app ? 'el programa ' + kb(t.app) + ' y ' : '') + 'tus datos en este navegador ' + kb(t.datos) + '.</div>' +
       '<div class="kv">Cada dispositivo guarda sus propios datos. Para pasarlos del PC al móvil: aquí arriba, <i>Descargar copia</i> en el PC y <i>Restaurar copia</i> en el móvil.</div></div>';
+  }
+
+  /** Lo que ocupa, en bytes: el programa (lo mide preparar-github.ps1 y lo deja en
+      data-size de index.html) y los datos de este navegador (los dos espacios y los ajustes). */
+  function sizes() {
+    var datos = 0;
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (/^(presupuesto-|mis-cuentas\.)/.test(k)) datos += new Blob([k, localStorage.getItem(k) || '']).size;
+      }
+    } catch (e) { }
+    return { app: Number(document.documentElement.getAttribute('data-size')) || 0, datos: datos };
+  }
+  function kb(bytes) {
+    var n = bytes / 1024;
+    return n.toLocaleString('es-ES', { maximumFractionDigits: n < 10 ? 1 : 0 }) + ' KB';
   }
 
   /** Cargar una copia (JSON): desde Ajustes, o en el móvil desde la vista simple. */

@@ -8,7 +8,7 @@
   var view = document.getElementById('view');
   var currentRoute = 'dashboard';
   // la versión va en tres sitios que deben coincidir: aquí, VERSION en sw.js y data-build en index.html
-  var APP_VERSION = '1.0.2';
+  var APP_VERSION = '1.0.3';
 
   /* ---------------- instalar la app ----------------
      Chrome para Android (≤157) dice «ya está instalada» en su menú si hay OTRA

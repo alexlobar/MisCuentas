@@ -5,7 +5,7 @@
    Con conexión coge siempre la versión nueva; sin ella, la guardada.
    ============================================================ */
 // la misma versión que APP_VERSION (js/app.js) y data-build (index.html)
-var VERSION = 'mis-cuentas-1.0.2';
+var VERSION = 'mis-cuentas-1.0.3';
 // todas las apps de alexlobar.github.io comparten el almacén de cachés: al actualizar, sólo se borran las de esta app
 var PREFIJO = 'mis-cuentas-';
 var FICHEROS = [
@@ -16,7 +16,11 @@ var FICHEROS = [
 ];
 
 self.addEventListener('install', function (e) {
-  e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(FICHEROS); }).then(function () { return self.skipWaiting(); }));
+  // 'reload' salta la caché HTTP del navegador (GitHub Pages da 10 min): sin esto, una
+  // versión subida poco después de la anterior podía guardar ficheros de la vieja.
+  e.waitUntil(caches.open(VERSION).then(function (c) {
+    return c.addAll(FICHEROS.map(function (f) { return new Request(f, { cache: 'reload' }); }));
+  }).then(function () { return self.skipWaiting(); }));
 });
 
 self.addEventListener('activate', function (e) {
@@ -29,7 +33,9 @@ self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
   e.respondWith(
-    fetch(req).then(function (res) {
+    // 'no-cache': pregunta al servidor si el fichero ha cambiado, para no coger
+    // uno viejo de la caché HTTP en los 10 minutos después de publicar
+    fetch(req, { cache: 'no-cache' }).then(function (res) {
       if (res && res.ok) { var copia = res.clone(); caches.open(VERSION).then(function (c) { c.put(req, copia); }); }
       return res;
     }).catch(function () {
